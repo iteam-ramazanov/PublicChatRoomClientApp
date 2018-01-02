@@ -27,7 +27,7 @@ public class PublicChatRoomClientActivity extends AppCompatActivity implements T
         final int port = Integer.parseInt(edtPort.getText().toString());
         final String nick_name = edtNickName.getText().toString();
         final String message = edtMessage.getText().toString();
-        Thread clientThread = new Thread(new Runnable() {
+        new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -40,8 +40,7 @@ public class PublicChatRoomClientActivity extends AppCompatActivity implements T
                     printMsg("Connection exception: " + e);
                 }
             }
-        });
-        clientThread.start();
+        }).start();
     }
 
     @Override
