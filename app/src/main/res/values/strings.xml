@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PublicChatRoomClientApp</string>
+    <string name="host_name">Имя хоста</string>
+    <string name="port_number">Номер порта</string>
+    <string name="nick_name">Ник</string>
+    <string name="send">Отправить</string>
 </resources>
