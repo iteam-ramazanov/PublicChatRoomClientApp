@@ -1,5 +1,7 @@
 package com.iteam_ramazanov.publicchatroomclientapp;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,16 +23,25 @@ public class PublicChatRoomClientActivity extends AppCompatActivity implements T
         EditText edtPort = (EditText) findViewById(R.id.edtPort);
         EditText edtNickName = (EditText) findViewById(R.id.edtNickName);
         EditText edtMessage = (EditText) findViewById(R.id.edtMessage) ;
-        String ip_address = edtHost.getText().toString();
-        int port = Integer.parseInt(edtPort.getText().toString());
-        String nick_name = edtNickName.getText().toString();
-        String message = edtMessage.getText().toString();
-        try {
-            TCPConnection connection = new TCPConnection(this, ip_address, port);
-            connection.sendString(nick_name + ": " + message);
-        } catch (IOException e) {
-            printMsg("Connection exception: " + e);
-        }
+        final String ip_address = edtHost.getText().toString();
+        final int port = Integer.parseInt(edtPort.getText().toString());
+        final String nick_name = edtNickName.getText().toString();
+        final String message = edtMessage.getText().toString();
+        Thread clientThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    TCPConnection connection = new TCPConnection(PublicChatRoomClientActivity.this, ip_address, port);
+                    connection.sendString(nick_name + ": " + message);
+                } catch (IOException e) {
+                    printMsg("Connection exception: " + e);
+                } catch (Exception e) {
+                    printMsg("Connection exception: " + e);
+                }
+            }
+        });
+        clientThread.start();
     }
 
     @Override
@@ -53,8 +64,14 @@ public class PublicChatRoomClientActivity extends AppCompatActivity implements T
         printMsg("Connection exception: " + e);
     }
 
-    private synchronized void printMsg(String message) {
-        TextView tvLogs = (TextView) findViewById(R.id.tvLogs);
-        tvLogs.append(message);
+    private synchronized void printMsg(final String message) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                TextView tvLogs = (TextView) findViewById(R.id.tvLogs);
+                tvLogs.append(message);
+            }
+        });
     }
 }
